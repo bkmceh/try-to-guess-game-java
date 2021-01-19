@@ -1,5 +1,6 @@
 package bkmceh.try_to_guess_game;
 
+import bkmceh.try_to_guess_game.controlls.MoveController;
 import bkmceh.try_to_guess_game.module.Game;
 import bkmceh.try_to_guess_game.module.Player;
 import bkmceh.try_to_guess_game.view.ConsoleView;
@@ -15,7 +16,11 @@ public class TryToGuessIC {
 
         Player player = new Player();
 
-        ConsoleView consoleView = new ConsoleView();
+        MoveController moveController = new MoveController();
+
+        moveController.setBegin(begin);
+
+        moveController.setEnd(end);
 
         System.out.println("Hello, write your name!");
         Scanner scanner = new Scanner(System.in);
@@ -23,35 +28,18 @@ public class TryToGuessIC {
 
         player.setName(name);
 
-        System.out.format("%s, choose the number from 1 to 100\n", player.getName());
+        System.out.format("%s, choose the number from %s to %s\n", player.getName(), begin, end);
 
-        Game game = new Game("Try to guess number", player);
+        Game game = new Game("Try to guess number", player, moveController);
 
-        System.out.format("Game: %s\n", game.getName());
+        ConsoleView consoleView = new ConsoleView(game);
+
+        game.showName();
         System.out.println("0 is less, 1 is more or equal");
 
-        while (end - begin > 1) {
-            System.out.format("Begin: %s, End: %s\n", begin, end);
-            System.out.format("Is it %s?\n", begin + (end - begin) / 2);
-            Scanner scanner1 = new Scanner(System.in);
-            int answer = scanner1.nextInt();
-            if (answer == 0) {
-                end = begin + (end - begin) / 2;
-            }
-            if (answer == 1) {
-                begin = begin + (end - begin) / 2;
-            }
+        while (moveController.newGuess()) {
+            consoleView.show();
         }
-        System.out.format("Begin: %s, End: %s\n", begin, end);
-        System.out.format("Is it %s?\n", end);
-        Scanner scanner1 = new Scanner(System.in);
-        int answer = scanner1.nextInt();
-        if (answer == 0) {
-            System.out.format("Is it %s\n", begin);
-        }
-        if (answer == 1) {
-            System.out.format("Is it %s\n", end);
-        }
-
+        consoleView.show();
     }
 }
